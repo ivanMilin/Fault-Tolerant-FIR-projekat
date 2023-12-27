@@ -55,8 +55,10 @@ begin
     
     process(data_to_mux)
     begin
+        if(rising_edge(clk_i)) then
         data_out_mux_1 <= data_to_mux(to_integer(unsigned(sel_data_o_1)));
         data_out_mux_2 <= data_to_mux(to_integer(unsigned(sel_data_o_2)));
+        end if;
     end process;
     
     process(clk_i, data_out_mux_1,data_out_mux_2) 
