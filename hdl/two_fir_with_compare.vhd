@@ -19,6 +19,7 @@ architecture Behavioral of two_fir_with_compare is
     signal first_data_o_s  : STD_LOGIC_VECTOR (output_data_width-2 downto 0) ;
     signal second_data_o_s : STD_LOGIC_VECTOR (output_data_width-2 downto 0);
     signal error_s : STD_LOGIC;
+    signal data_out_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0);
 begin
     first_module : 
     entity work.fir_param(Behavioral)
@@ -53,5 +54,14 @@ begin
         end if;        
     end process;
     
-    data_out <= first_data_o_s & error_s;          
+    process(clk_in)
+    begin
+        if(rising_edge(clk_in))then
+            if we_in = '1' then
+                data_out_s <= first_data_o_s & error_s;    
+            end if;
+        end if;
+    end process;
+    
+    data_out <= data_out_s;
 end Behavioral;
