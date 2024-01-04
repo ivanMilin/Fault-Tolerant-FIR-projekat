@@ -11,7 +11,6 @@ package body util_pkg is
 	begin
 	m:=0;
 	p:=1;
-	
 	while p<n loop
 		m := m + 1;
 		p := p * 2;
