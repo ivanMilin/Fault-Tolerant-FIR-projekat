@@ -6,7 +6,7 @@ use work.util_pkg.all;
 entity replication is
     generic(fir_ord : natural := 20;
             input_data_width : natural := 24;
-            output_data_width : natural := 25;
+            output_data_width : natural := 24;
             number_of_replication : natural := 5);
     Port ( clk_i : in STD_LOGIC;
            we_i  : in STD_LOGIC;
@@ -14,7 +14,7 @@ entity replication is
            coef_addr_i : STD_LOGIC_VECTOR(log2c(fir_ord+1) - 1 downto 0);
            coef_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
            data_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
-           data_outt  : out STD_LOGIC_VECTOR (output_data_width - 2 downto 0));
+           data_outt  : out STD_LOGIC_VECTOR (output_data_width - 1 downto 0));
 end replication;
 
 architecture Behavioral of replication is
@@ -46,7 +46,8 @@ begin
                       coef_addr_in => coef_addr_i,
                       coef_in => coef_i,
                       data_in => data_i,
-                      data_out =>  data_to_mux(i));
+                      data_out =>  data_to_mux(i),
+                      error_out => data_to_mux(i*output_data_width+1));
     end generate;
     
     process(clk_i, rst_i)

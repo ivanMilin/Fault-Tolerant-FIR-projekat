@@ -19,9 +19,10 @@ end two_fir_with_compare;
 architecture Behavioral of two_fir_with_compare is
     signal first_data_o_s  : STD_LOGIC_VECTOR (output_data_width-1 downto 0) ;
     signal second_data_o_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0);
-    --signal error_s, error_out_s : STD_LOGIC;
+    signal error_s : STD_LOGIC := '0';--, error_out_s : STD_LOGIC;
+    signal error_out_s : STD_LOGIC := '0';
     signal data_out_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0);
-begin
+begin     
     first_module : 
     entity work.fir_param(Behavioral)
     generic map(fir_ord => fir_ord, input_data_width => input_data_width, output_data_width =>output_data_width)
@@ -44,12 +45,12 @@ begin
             data_o => second_data_o_s); 
           
     error_detection:
-    process(clk_in, first_data_o_s,second_data_o_s) 
-    begin    
+    process(first_data_o_s,second_data_o_s) 
+    begin   
         if( first_data_o_s/= second_data_o_s) then
-            error_out <= '1'; -- mozda treba da se doda ff
-        else
-            error_out <= '0'; -- mozda treba da se doda ff
+            error_s <= '1';
+        else 
+            error_s <= '0';
         end if;        
     end process;
     
@@ -57,10 +58,15 @@ begin
     begin
         if(rising_edge(clk_in))then
             if we_in = '1' then
-                data_out_s  <= first_data_o_s; 
+                data_out_s <= first_data_o_s; 
+                error_out_s  <= error_s;
+            else
+                data_out_s  <= (others => '0'); 
+                error_out_s <= '0';
             end if;
         end if;
     end process;
     
+    error_out <= error_out_s;
     data_out  <= data_out_s;
 end Behavioral;
