@@ -19,14 +19,14 @@ add_files -norecurse ../hdl/txt_util.vhd
 add_files -norecurse ../hdl/mac.vhd
 add_files -norecurse ../hdl/fir_param.vhd
 add_files -norecurse ../hdl/two_fir_with_compare.vhd
-#add_files -norecurse ../hdl/replication.vhd
+add_files -norecurse ../hdl/replication.vhd
 
 
 update_compile_order -fileset sources_1
 
 set_property SOURCE_SET sources_1 [get_filesets sim_1]
-add_files -fileset sim_1 -norecurse ../tb/two_fir_with_compare_tb.vhd
-
+#add_files -fileset sim_1 -norecurse ../tb/two_fir_with_compare_tb.vhd
+add_files -fileset sim_1 -norecurse ../tb/replication_tb.vhd
 
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1

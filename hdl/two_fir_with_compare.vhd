@@ -19,8 +19,8 @@ end two_fir_with_compare;
 architecture Behavioral of two_fir_with_compare is
     signal first_data_o_s  : STD_LOGIC_VECTOR (output_data_width-1 downto 0) ;
     signal second_data_o_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0);
-    signal error_s : STD_LOGIC := '0';--, error_out_s : STD_LOGIC;
-    signal error_out_s : STD_LOGIC := '0';
+    signal error_s : STD_LOGIC := '0';
+    signal error_out_s : STD_LOGIC;
     signal data_out_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0);
 begin     
     first_module : 
