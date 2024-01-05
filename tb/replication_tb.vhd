@@ -15,9 +15,9 @@ end tb;
 architecture Behavioral of tb is
     constant period : time := 20 ns;
     signal clk_i_s : std_logic;
-    file input_test_vector : text open read_mode is "C:\Users\Ivan Milin\Desktop\MAS\Fault-Tolerant-FIR\data\input.txt";
-    file output_check_vector : text open read_mode is "C:\Users\Ivan Milin\Desktop\MAS\Fault-Tolerant-FIR\data\expected.txt";
-    file input_coef : text open read_mode is "C:\Users\Ivan Milin\Desktop\MAS\Fault-Tolerant-FIR\data\coef.txt";
+    file input_test_vector : text open read_mode is "..\..\..\..\..\data\input.txt";
+    file output_check_vector : text open read_mode is "..\..\..\..\..\data\expected.txt";
+    file input_coef : text open read_mode is "..\..\..\..\..\data\coef.txt";
     signal data_i_s : std_logic_vector(in_out_data_width-1 downto 0);
     signal data_o_s : std_logic_vector(in_out_data_width-1 downto 0);
     signal coef_addr_i_s : std_logic_vector(log2c(fir_ord)-1 downto 0);

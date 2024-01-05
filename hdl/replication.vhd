@@ -29,13 +29,14 @@ architecture Behavioral of replication is
     signal sel_data_2 : STD_LOGIC_VECTOR (log2c(number_of_replication)-1 downto 0) := std_logic_vector(to_unsigned(1, log2c(number_of_replication)));
     
     -- Pomocni signali za prosledjivanje errora svakog pojedinacnog bloka 
-    signal error_from_comparator : STD_LOGIC;
+    signal error_from_comparator : STD_LOGIC := '0';
     
     -- Pomocni signal kojim ce se redukovati koji selekcioni sigal treba da se promeni
-    signal counter : unsigned (log2c(number_of_replication) - 1 downto 0) := (others => '0');
+    signal counter : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(2, log2c(number_of_replication)));
     
     signal data_outt_s  : STD_LOGIC_VECTOR (output_data_width - 2 downto 0);   
 begin
+    
     replication_of_fir: 
     for i in 0 to number_of_replication-1 generate
         replication:
@@ -50,29 +51,21 @@ begin
                       error_out => data_to_mux(i)(0));
     end generate;
     
-    process(clk_i, rst_i)
+    process(error_from_comparator, data_from_mux_1(0),data_from_mux_2(0))
     begin
-        if(rising_edge(clk_i)) then
-            if (rst_i = '1') then
-                sel_data_1 <= std_logic_vector(to_unsigned(0, log2c(number_of_replication)));  
-                sel_data_2 <= std_logic_vector(to_unsigned(1, log2c(number_of_replication)));
-                counter <= (to_unsigned(2, log2c(number_of_replication)));
+        --if(rising_edge(clk_i)) then
+            --if(error_from_comparator = '1' or data_from_mux_1(0) = '1') then
+            if((rising_edge(error_from_comparator) or rising_edge(data_from_mux_1(0))) and sel_data_1 /= std_logic_vector(counter)) then  
+                sel_data_1 <= std_logic_vector(counter);
+                counter <= counter + 1;
+            elsif((rising_edge(error_from_comparator) or rising_edge(data_from_mux_2(0))) and sel_data_2 /= std_logic_vector(counter)) then  
+                sel_data_2 <= std_logic_vector(counter); 
+                counter <= counter + 1;     
             else
-                if(error_from_comparator = '1' and data_from_mux_1(0) = '1') then  
-                    sel_data_1 <= std_logic_vector(counter);
-                    counter <= counter + 1;
-                --else 
-                --    counter <= counter;
-                end if;
-                if(error_from_comparator  = '1' and data_from_mux_2(0) = '1') then
-                    sel_data_2 <= std_logic_vector(counter);            
-                    counter <= counter + 1;
-                --else
-                --    counter <= counter;
-                end if;
+                counter <= counter;    
             end if;
-        end if;        
-    end process;           
+        --end if;
+    end process;          
           
     process(sel_data_1, sel_data_2,data_to_mux)
     begin
@@ -84,8 +77,8 @@ begin
     begin
         if(data_from_mux_1(output_data_width-1 downto 1) /= data_from_mux_2(output_data_width-1 downto 1)) then
             error_from_comparator <= '1';    
-        else
-            error_from_comparator <= '0';
+        --else
+            --error_from_comparator <= '0';
         end if; 
     end process;
     
