@@ -20,7 +20,7 @@ end replication;
 architecture Behavioral of replication is
     -- Pomocni signali za prosledjivanje podataka u MUXeve i iz MUXeva 
     type output_type is array (0 to number_of_replication-1) of STD_LOGIC_VECTOR(output_data_width-1 downto 0);
-    type help_type is array (0 to number_of_replication-2) of STD_LOGIC_VECTOR(output_data_width-1 downto 0);
+    type help_type is array (0 to number_of_replication-1) of STD_LOGIC_VECTOR(output_data_width-1 downto 0);
     
     signal data_to_mux  : output_type:=(others=>(others=>'0'));
     
@@ -35,7 +35,7 @@ architecture Behavioral of replication is
     signal sel_data_2 : STD_LOGIC_VECTOR (log2c(number_of_replication)-1 downto 0) := std_logic_vector(to_unsigned(0, log2c(number_of_replication)));
     
     -- Pomocni signali za prosledjivanje errora svakog pojedinacnog bloka 
-    signal error_from_comparator : STD_LOGIC;
+    signal error_from_comparator : STD_LOGIC := '0';
     
     -- Pomocni signal kojim ce se redukovati koji selekcioni sigal treba da se promeni
     signal counter : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(1, log2c(number_of_replication)));
@@ -83,12 +83,10 @@ begin
                 counter <= counter + 1;
             elsif((error_from_comparator = '1' and data_from_mux_2(0) = '1') and sel_data_2 /= std_logic_vector(counter)) then  
                 sel_data_2 <= std_logic_vector(counter); 
-                counter <= counter + 1;     
+                counter <= counter + 1;    
             else
                 counter <= counter;
             end if;
-        --else
-        --    data_outt_s <= (others => '0');
         end if;                   
     end process;          
           
@@ -112,14 +110,23 @@ begin
     process(clk_i)
     begin
         if(rising_edge(clk_i))then
-            if we_i = '1' and rst_i = '0' then
-                data_outt_s <= data_from_mux_1(output_data_width-1 downto 1);    
+            if we_i = '1' and rst_i = '0'then
+                data_out_s <= data_from_mux_1(output_data_width-1 downto 1);    
             else
-                data_outt_s <= (others => '0');
+                data_out_s <= (others => '0');
             end if;
         end if;
     end process;
 
-    data_outt <= data_outt_s ;
+    process(clk_i) 
+    begin
+        if(counter = checker) then
+            data_outt_s <= (others => '0'); 
+        else
+            data_outt_s <= data_out_s;
+        end if;
+    end process;
+    
+    data_outt <= data_outt_s; 
 
 end Behavioral;
