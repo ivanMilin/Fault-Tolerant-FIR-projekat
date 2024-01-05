@@ -48,8 +48,8 @@ begin
     begin  
         if( first_data_o_s/= second_data_o_s) then
             error_s <= '1';
-        --else
-            --error_s <= '0';
+        else
+            error_s <= '0';
         end if;        
     end process;
     
