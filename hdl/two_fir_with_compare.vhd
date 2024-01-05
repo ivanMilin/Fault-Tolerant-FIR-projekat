@@ -46,10 +46,10 @@ begin
           
     error_detection:
     process(first_data_o_s,second_data_o_s) 
-    begin   
+    begin  
         if( first_data_o_s/= second_data_o_s) then
             error_s <= '1';
-        else 
+        else
             error_s <= '0';
         end if;        
     end process;
@@ -59,14 +59,12 @@ begin
         if(rising_edge(clk_in))then
             if we_in = '1' then
                 data_out_s <= first_data_o_s; 
-                error_out_s  <= error_s;
             else
                 data_out_s  <= (others => '0'); 
-                error_out_s <= '0';
             end if;
         end if;
     end process;
     
-    error_out <= error_out_s;
+    error_out <= error_s;
     data_out  <= data_out_s;
 end Behavioral;

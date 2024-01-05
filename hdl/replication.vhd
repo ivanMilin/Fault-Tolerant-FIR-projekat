@@ -21,8 +21,8 @@ architecture Behavioral of replication is
     -- Pomocni signali za prosledjivanje podataka u MUXeve i iz MUXeva 
     type output_type is array (0 to number_of_replication-1) of STD_LOGIC_VECTOR(output_data_width-1 downto 0);
     signal data_to_mux  : output_type:=(others=>(others=>'0'));
-    signal data_from_mux_1 : STD_LOGIC_VECTOR (output_data_width - 2 downto 0);
-    signal data_from_mux_2 : STD_LOGIC_VECTOR (output_data_width - 2 downto 0);
+    signal data_from_mux_1 : STD_LOGIC_VECTOR (output_data_width - 1 downto 0);
+    signal data_from_mux_2 : STD_LOGIC_VECTOR (output_data_width - 1 downto 0);
 
     -- Pomocni signali za odlucivanje koji podatak da se prosledi kroz MUX
     signal sel_data_1 : STD_LOGIC_VECTOR (log2c(number_of_replication)-1 downto 0) := std_logic_vector(to_unsigned(0, log2c(number_of_replication)));
@@ -58,28 +58,31 @@ begin
                 sel_data_2 <= std_logic_vector(to_unsigned(1, log2c(number_of_replication)));
                 counter <= (to_unsigned(2, log2c(number_of_replication)));
             else
-                if(error_from_comparator = '1' and data_from_mux_1(0) = '1') then
-                    sel_data_1 <= std_logic_vector(counter); 
-                    counter <= counter + 1; 
-                elsif(error_from_comparator  = '1' and data_from_mux_2(0) = '1') then
-                    sel_data_2 <= std_logic_vector(counter);
+                if(error_from_comparator = '1' and data_from_mux_1(0) = '1') then  
+                    sel_data_1 <= std_logic_vector(counter);
                     counter <= counter + 1;
-                else 
-                    counter <= counter;              
+                --else 
+                --    counter <= counter;
+                end if;
+                if(error_from_comparator  = '1' and data_from_mux_2(0) = '1') then
+                    sel_data_2 <= std_logic_vector(counter);            
+                    counter <= counter + 1;
+                --else
+                --    counter <= counter;
                 end if;
             end if;
-        end if;    
+        end if;        
     end process;           
           
     process(sel_data_1, sel_data_2,data_to_mux)
     begin
-        data_from_mux_1 <= data_to_mux(to_integer(unsigned(sel_data_1)))(output_data_width-1 downto 1);
-        data_from_mux_2 <= data_to_mux(to_integer(unsigned(sel_data_2)))(output_data_width-1 downto 1);
+        data_from_mux_1 <= data_to_mux(to_integer(unsigned(sel_data_1)));
+        data_from_mux_2 <= data_to_mux(to_integer(unsigned(sel_data_2)));
     end process;
     
     process(data_from_mux_1,data_from_mux_2) 
     begin
-        if(data_from_mux_1 /= data_from_mux_2) then
+        if(data_from_mux_1(output_data_width-1 downto 1) /= data_from_mux_2(output_data_width-1 downto 1)) then
             error_from_comparator <= '1';    
         else
             error_from_comparator <= '0';
@@ -90,7 +93,7 @@ begin
     begin
         if(rising_edge(clk_i))then
             if we_i = '1' then
-                data_outt_s <= data_from_mux_1;    
+                data_outt_s <= data_from_mux_1(output_data_width-1 downto 1);    
             else
                 data_outt_s <= (others => '0');
             end if;
