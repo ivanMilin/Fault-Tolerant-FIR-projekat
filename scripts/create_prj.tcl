@@ -20,6 +20,8 @@ add_files -norecurse ../hdl/mac.vhd
 add_files -norecurse ../hdl/fir_param.vhd
 add_files -norecurse ../hdl/two_fir_with_compare.vhd
 add_files -norecurse ../hdl/replication.vhd
+add_files -norecurse ../hdl/bram.vhd
+add_files -norecurse ../hdl/top.vhd
 
 
 update_compile_order -fileset sources_1
