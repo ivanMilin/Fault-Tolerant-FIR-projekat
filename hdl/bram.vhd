@@ -12,7 +12,7 @@ port (
     clk : in std_logic;
     en : in std_logic;
     we : in std_logic;
-    addr_read1 : in std_logic_vector(ADDR_SIZE-1  downto 0);
+    addr_read : in std_logic_vector(ADDR_SIZE-1  downto 0);
     addr_write : in std_logic_vector(ADDR_SIZE-1  downto 0);
     data_in : in std_logic_vector(RAM_WIDTH - 1 downto 0);
     data_out1 : out std_logic_vector(RAM_WIDTH - 1 downto 0));
@@ -30,7 +30,7 @@ begin
                     memory(to_integer(unsigned(addr_write))) <= data_in;
                 end if;
    
-                data_out1 <= memory(to_integer(unsigned(addr_read1)));
+                data_out1 <= memory(to_integer(unsigned(addr_read)));
             end if;
         end if;
     end process;
