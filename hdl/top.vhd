@@ -36,37 +36,35 @@ architecture Behavioral of top is
 signal data_from_input_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);
 signal data_to_output_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);    
 
-signal address_input_bram_reg  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');  
-signal address_input_bram_next :  std_logic_vector(ADDR_SIZE-1  downto 0):= (others => '0');  
+signal address_input_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
 
-signal address_output_bram_reg  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');  
-signal address_output_bram_next :  std_logic_vector(ADDR_SIZE-1  downto 0):= (others => '0'); 
+signal address_output_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0'); 
 signal fir_ready_s : std_logic;
 signal ready_s : std_logic;
 
 signal counter_for_ready : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(0, log2c(number_of_replication)));
 begin
+    --Kada se postavi start na jedinicu pocinju da se citaju podaci iz ulaznog BRAMa
+    process(clk, start)
+    begin
+        if(rising_edge(clk)) then
+            if(start = '1') then
+                address_input_bram <= std_logic_vector(unsigned(address_input_bram) + to_unsigned(1,ADDR_SIZE));  
+            else
+                address_input_bram <= address_input_bram;      
+            end if; 
+        end if;
+    end process;
+
     INPUT_bram : entity work.bram(Behavioral)
     generic map(RAM_WIDTH=> RAM_WIDTH, RAM_DEPTH=>RAM_DEPTH, ADDR_SIZE=>ADDR_SIZE)    
     port map( clk => clk,
               en  => en, 
               we  => we,
-              addr_read  => address_input_bram_next, 
+              addr_read  => address_input_bram, 
               addr_write => addr_write,
               data_in  => data_in,
               data_out => data_from_input_bram);
-
-    --Kada se postavi start na jedinicu pocinju da se citaju podaci iz ulaznog BRAMa
-    process(clk,start, address_input_bram_reg)
-    begin
-        if(rising_edge(clk)) then
-            if(start = '1') then
-                address_input_bram_next <= std_logic_vector(unsigned(address_input_bram_reg) + to_unsigned(1,ADDR_SIZE));  
-            else
-                address_input_bram_next <= address_input_bram_reg;
-            end if;
-        end if; 
-    end process;
 
     pair_and_spare_FIR:
     entity work.replication(Behavioral)
@@ -82,15 +80,17 @@ begin
             fir_ready => fir_ready_s );
     
     -- Kad se pojavi 'fir_ready_s' na jedinicu, upisuju se podaci iz FIR filtra u izlazni bram
-    process(start, address_input_bram_reg)
+    process(fir_ready_s, address_output_bram)
     begin
-        if(fir_ready_s = '1') then
-            address_output_bram_next <= std_logic_vector(unsigned(address_input_bram_reg) + to_unsigned(1,ADDR_SIZE));  
-            counter_for_ready <= counter_for_ready + 1;
-        else
-            address_output_bram_next <= address_input_bram_reg;
-            counter_for_ready <= counter_for_ready; 
-        end if; 
+        if(rising_edge(clk)) then
+            if(fir_ready_s = '1') then
+                address_output_bram <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));  
+                counter_for_ready <= counter_for_ready + 1;
+            else
+                address_output_bram <= address_output_bram;
+                counter_for_ready <= counter_for_ready; 
+            end if;
+        end if;         
     end process;        
 
     OUTPUT_bram: 
@@ -100,7 +100,7 @@ begin
               en  => en, 
               we  => we,
               addr_read  => addr_read, 
-              addr_write => address_output_bram_next,
+              addr_write => address_output_bram,
               data_in  => data_to_output_bram,
               data_out => data_out);
             
