@@ -9,7 +9,7 @@ entity two_fir_with_compare is
             output_data_width : natural := 24);
     Port ( clk_in : in STD_LOGIC;
            we_in : in STD_LOGIC;
-           coef_addr_in : std_logic_vector(log2c(fir_ord+1)-1 downto 0);
+           coef_addr_in : in std_logic_vector(log2c(fir_ord+1)-1 downto 0);
            coef_in : in STD_LOGIC_VECTOR (input_data_width-1 downto 0);
            data_in : in STD_LOGIC_VECTOR (input_data_width-1 downto 0);
            data_out  : out STD_LOGIC_VECTOR (output_data_width-1 downto 0);

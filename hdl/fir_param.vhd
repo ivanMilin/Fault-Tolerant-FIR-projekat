@@ -9,7 +9,7 @@ entity fir_param is
             output_data_width : natural := 24);
     Port ( clk_i : in STD_LOGIC;
            we_i : in STD_LOGIC;
-           coef_addr_i : std_logic_vector(log2c(fir_ord+1)-1 downto 0);
+           coef_addr_i : in std_logic_vector(log2c(fir_ord+1)-1 downto 0);
            coef_i : in STD_LOGIC_VECTOR (input_data_width-1 downto 0);
            data_i : in STD_LOGIC_VECTOR (input_data_width-1 downto 0);
            data_o : out STD_LOGIC_VECTOR (output_data_width-1 downto 0));

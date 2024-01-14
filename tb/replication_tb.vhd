@@ -17,7 +17,6 @@ architecture Behavioral of tb is
     constant period : time := 20 ns;
     signal clk_i_s : std_logic;
     file input_test_vector : text open read_mode is "..\..\..\..\..\data\input.txt";
-    file output_check_vector : text open read_mode is "..\..\..\..\..\data\expected.txt";
     file input_coef : text open read_mode is "..\..\..\..\..\data\coef.txt";
     signal data_i_s : std_logic_vector(in_out_data_width-1 downto 0);
     signal data_o_s : std_logic_vector(in_out_data_width-1 downto 0);
@@ -58,11 +57,14 @@ begin
     begin
         rst_i_s <= '1';
         we_i_s <= '0';
+        
         wait until falling_edge(clk_i_s);
         rst_i_s <= '0';
+        
         --upis koeficijenata
         data_i_s <= (others=>'0');
         wait until falling_edge(clk_i_s);
+        
         for i in 0 to fir_ord loop
             we_i_s <= '1';
             coef_addr_i_s <= std_logic_vector(to_unsigned(i,log2c(fir_ord)));
@@ -70,6 +72,7 @@ begin
             coef_i_s <= to_std_logic_vector(string(tv));
             wait until falling_edge(clk_i_s);
         end loop;
+        
         --ulaz za filtriranje
         while not endfile(input_test_vector) loop
             readline(input_test_vector,tv);
@@ -77,6 +80,7 @@ begin
             wait until falling_edge(clk_i_s);
             start_check <= '1';
         end loop;
+        
         start_check <= '0';
         report "verification done!" severity failure;
     end process;

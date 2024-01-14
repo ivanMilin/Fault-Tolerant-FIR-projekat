@@ -4,17 +4,19 @@ use IEEE.NUMERIC_STD.ALL;
 use work.util_pkg.all;
 
 entity replication is
-    generic(fir_ord : natural := 20;
-            input_data_width : natural := 24;
-            output_data_width : natural := 25;
-            number_of_replication : natural := 7);
-    Port ( clk_i : in STD_LOGIC;
-           we_i  : in STD_LOGIC;
-           rst_i : in STD_LOGIC;
-           coef_addr_i : STD_LOGIC_VECTOR(log2c(fir_ord+1) - 1 downto 0);
-           coef_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
-           data_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
-           data_outt  : out STD_LOGIC_VECTOR (output_data_width - 2 downto 0));
+    generic ( fir_ord : natural := 20;
+              input_data_width : natural := 24;
+              output_data_width : natural := 25;
+              number_of_replication : natural := 7);
+      
+        Port( clk_i : in STD_LOGIC;
+              we_i  : in STD_LOGIC;
+              rst_i : in STD_LOGIC;
+              coef_addr_i : in STD_LOGIC_VECTOR(log2c(fir_ord+1) - 1 downto 0);
+              coef_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
+              data_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
+              data_outt  : out STD_LOGIC_VECTOR (output_data_width - 2 downto 0);
+              fir_ready  : out std_logic);
 end replication;
 
 architecture Behavioral of replication is
@@ -40,7 +42,9 @@ architecture Behavioral of replication is
     -- Pomocni signal kojim ce se redukovati koji selekcioni sigal treba da se promeni
     signal counter : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(1, log2c(number_of_replication)));
     signal checker : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(number_of_replication, log2c(number_of_replication)));
-    signal data_out_s, data_outt_s  : STD_LOGIC_VECTOR (output_data_width - 2 downto 0);   
+    signal data_out_s, data_outt_s  : STD_LOGIC_VECTOR (output_data_width - 2 downto 0);  
+    
+    signal fir_ready_s : std_logic := '0'; 
 begin
     
     replication_of_fir: 
@@ -111,9 +115,11 @@ begin
     begin
         if(rising_edge(clk_i))then
             if we_i = '1' and rst_i = '0'then
-                data_out_s <= data_from_mux_1(output_data_width-1 downto 1);    
+                data_out_s <= data_from_mux_1(output_data_width-1 downto 1);
+                fir_ready_s <= '1';    
             else
-                data_out_s <= (others => '0');
+                data_out_s  <= (others => '0');
+                fir_ready_s <= '0';
             end if;
         end if;
     end process;
@@ -128,5 +134,6 @@ begin
     end process;
     
     data_outt <= data_outt_s; 
+    fir_ready <= fir_ready_s;
 
 end Behavioral;
