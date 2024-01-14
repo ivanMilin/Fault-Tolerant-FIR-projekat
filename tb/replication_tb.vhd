@@ -8,7 +8,8 @@ use work.util_pkg.all;
 
 entity tb is
     generic(in_out_data_width : natural := 24;
-            fir_ord : natural := 20);
+            fir_ord : natural := 20;
+            number_of_replication : natural := 7); 
 --  Port ( );
 end tb;
 
@@ -32,7 +33,8 @@ begin
     entity work.replication(behavioral)
     generic map(fir_ord=>fir_ord,
                 input_data_width=>in_out_data_width,
-                output_data_width=>in_out_data_width+1)
+                output_data_width=>in_out_data_width+1,
+                number_of_replication => number_of_replication)
     port map(clk_i  => clk_i_s,
              rst_i  => rst_i_s,
              we_i   => we_i_s,

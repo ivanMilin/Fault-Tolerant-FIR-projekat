@@ -7,7 +7,7 @@ entity replication is
     generic(fir_ord : natural := 20;
             input_data_width : natural := 24;
             output_data_width : natural := 25;
-            number_of_replication : natural := 5);
+            number_of_replication : natural := 7);
     Port ( clk_i : in STD_LOGIC;
            we_i  : in STD_LOGIC;
            rst_i : in STD_LOGIC;
@@ -20,7 +20,7 @@ end replication;
 architecture Behavioral of replication is
     -- Pomocni signali za prosledjivanje podataka u MUXeve i iz MUXeva 
     type output_type is array (0 to number_of_replication-1) of STD_LOGIC_VECTOR(output_data_width-1 downto 0);
-    type help_type is array (0 to number_of_replication-1) of STD_LOGIC_VECTOR(output_data_width-1 downto 0);
+    type help_type   is array (0 to number_of_replication) of STD_LOGIC_VECTOR(output_data_width-1 downto 0);
     
     signal data_to_mux  : output_type:=(others=>(others=>'0'));
     
@@ -75,7 +75,7 @@ begin
     end process;
         
     
-    process(clk_i,error_from_comparator, data_from_mux_1(0),sel_data_1,sel_data_2,counter)
+    process(clk_i,error_from_comparator, data_from_mux_1(0),data_from_mux_2(0),sel_data_1,sel_data_2,counter)
     begin
         if(rising_edge(clk_i)) then
             if((error_from_comparator = '1' and data_from_mux_1(0) = '1') and sel_data_1 /= std_logic_vector(counter)) then  
