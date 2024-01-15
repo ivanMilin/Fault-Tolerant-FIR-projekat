@@ -10,7 +10,7 @@ entity top is
              
              fir_ord : natural := 20;
              input_data_width : natural := 24;
-             output_data_width : natural := 25;
+             output_data_width : natural := 24;
              number_of_replication : natural := 7);
        
        port( clk : in std_logic;
@@ -41,8 +41,6 @@ signal address_input_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others 
 signal address_output_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0'); 
 signal fir_ready_s : std_logic;
 signal ready_s : std_logic;
-
-signal counter_for_ready : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(0, log2c(number_of_replication)));
 begin
     --Kada se postavi start na jedinicu pocinju da se citaju podaci iz ulaznog BRAMa
     process(clk, start)
@@ -84,11 +82,9 @@ begin
     begin
         if(rising_edge(clk)) then
             if(fir_ready_s = '1') then
-                address_output_bram <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));  
-                --counter_for_ready <= counter_for_ready + 1;
+                address_output_bram <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));
             else
                 address_output_bram <= address_output_bram;
-                --counter_for_ready <= counter_for_ready; 
             end if;
         end if;         
     end process;        

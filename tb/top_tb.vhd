@@ -7,8 +7,11 @@ use work.txt_util.all;
 use work.util_pkg.all;
 
 entity tb is
-    generic(in_out_data_width : natural := 24;
+    generic(RAM_WIDTH : integer := 24;
+            RAM_DEPTH : integer := 4096;
+            ADDR_SIZE : integer := 12;
             fir_ord : natural := 20;
+            in_out_data_width : natural := 24;
             number_of_replication : natural := 7); 
 --  Port ( );
 end tb;
@@ -22,25 +25,36 @@ architecture Behavioral of tb is
     signal data_o_s : std_logic_vector(in_out_data_width-1 downto 0);
     signal coef_addr_i_s : std_logic_vector(log2c(fir_ord)-1 downto 0);
     signal coef_i_s : std_logic_vector(in_out_data_width-1 downto 0);
-    signal we_i_s : std_logic;
+    signal we_i_s, en_i_s : std_logic;
     signal rst_i_s : std_logic;
     signal start_check : std_logic := '0';
+    signal addr_read_i_s,addr_write_i_s : std_logic_vector(ADDR_SIZE-1  downto 0);
+    signal start_i_s,ready_i_s : std_logic;
+    signal iterration : natural := 4096;
 
 begin
 
     uut_fir_filter:
-    entity work.replication(behavioral)
+    entity work.top(behavioral)
     generic map(fir_ord=>fir_ord,
+                RAM_WIDTH => RAM_WIDTH,
+                RAM_DEPTH => RAM_DEPTH,
+                ADDR_SIZE => ADDR_SIZE,
                 input_data_width=>in_out_data_width,
                 output_data_width=>in_out_data_width+1,
                 number_of_replication => number_of_replication)
-    port map(clk_i  => clk_i_s,
-             rst_i  => rst_i_s,
-             we_i   => we_i_s,
+    port map(clk  => clk_i_s,
+             rst  => rst_i_s,
+             we   => we_i_s,
+             en   => en_i_s,
              coef_i =>coef_i_s,
              coef_addr_i=>coef_addr_i_s,
-             data_i=>data_i_s,
-             data_outt=>data_o_s);
+             addr_read  => addr_read_i_s,
+             addr_write => addr_write_i_s,
+             data_in=>data_i_s,      
+             data_out=>data_o_s,
+             start => start_i_s,
+             ready => ready_i_s);
 
     clk_process:
     process
@@ -57,9 +71,12 @@ begin
     begin
         rst_i_s <= '1';
         we_i_s <= '0';
+        en_i_s <= '0';
+        start_i_s <= '0';
         
         wait until falling_edge(clk_i_s);
         rst_i_s <= '0';
+        en_i_s <= '1';
         
         --upis koeficijenata
         data_i_s <= (others=>'0');
@@ -77,10 +94,20 @@ begin
         while not endfile(input_test_vector) loop
             readline(input_test_vector,tv);
             data_i_s <= to_std_logic_vector(string(tv));
+            addr_write_i_s <= std_logic_vector(to_unsigned(iterration,ADDR_SIZE));
             wait until falling_edge(clk_i_s);
             start_check <= '1';
+            iterration <= iterration + 1 ;
         end loop;
         
+        start_i_s <= '1';
+        
+        if(ready_i_s = '1') then
+            for i in 0 to RAM_DEPTH-1 loop
+                addr_read_i_s <= std_logic_vector(to_unsigned(i,ADDR_SIZE));
+            end loop;
+        end if;
+            
         start_check <= '0';
         report "verification done!" severity failure;
     end process;
