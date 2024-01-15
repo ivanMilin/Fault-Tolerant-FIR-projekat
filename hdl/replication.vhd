@@ -94,7 +94,7 @@ begin
         end if;                   
     end process;          
           
-    process(sel_data_1, sel_data_2,data_to_mux)
+    process(sel_data_1, sel_data_2,data_to_mux_1,data_to_mux_2)
     begin
         data_from_mux_1 <= data_to_mux_1(to_integer(unsigned(sel_data_1)));
         data_from_mux_2 <= data_to_mux_2(to_integer(unsigned(sel_data_2)));
@@ -124,7 +124,7 @@ begin
         end if;
     end process;
 
-    process(clk_i) 
+    process(clk_i,counter,checker,data_out_s) 
     begin
         if(counter = checker) then
             data_outt_s <= (others => '0'); 

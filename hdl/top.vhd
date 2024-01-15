@@ -80,15 +80,15 @@ begin
             fir_ready => fir_ready_s );
     
     -- Kad se pojavi 'fir_ready_s' na jedinicu, upisuju se podaci iz FIR filtra u izlazni bram
-    process(fir_ready_s, address_output_bram)
+    process(clk,fir_ready_s, address_output_bram)
     begin
         if(rising_edge(clk)) then
             if(fir_ready_s = '1') then
                 address_output_bram <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));  
-                counter_for_ready <= counter_for_ready + 1;
+                --counter_for_ready <= counter_for_ready + 1;
             else
                 address_output_bram <= address_output_bram;
-                counter_for_ready <= counter_for_ready; 
+                --counter_for_ready <= counter_for_ready; 
             end if;
         end if;         
     end process;        
@@ -105,10 +105,10 @@ begin
               data_out => data_out);
             
     -- generisanje READY signala na jedinicu kad se obradi N odbiraka           
-    process(clk,counter_for_ready)
+    process(clk,address_output_bram)
     begin
         if(rising_edge(clk)) then
-            if(counter_for_ready = RAM_DEPTH - 1) then
+            if(fir_ready_s = '1' and address_output_bram = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE))) then
                 ready_s <= '1';
             else
                 ready_s <= '0';
