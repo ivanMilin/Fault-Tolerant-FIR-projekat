@@ -86,8 +86,6 @@ begin
         end if;
     end process;
     
-        
-    
     process(clk_i,error_from_comparator, data_from_mux_1(0),data_from_mux_2(0),sel_data_1,sel_data_2,counter)
     begin
         if(rising_edge(clk_i)) then
