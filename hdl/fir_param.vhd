@@ -23,7 +23,7 @@ architecture Behavioral of fir_param is
                                                            
 begin
 
-    process(clk_i)
+    process(clk_i,coef_i)
     begin
         if(clk_i'event and clk_i = '1')then
             if we_i = '1' then
@@ -53,7 +53,7 @@ begin
                  sec_o=>mac_inter(i));
     end generate;
     
-    process(clk_i)
+    process(clk_i,mac_inter)
     begin
         if(clk_i'event and clk_i='1')then
             data_o <= mac_inter(fir_ord)(2*input_data_width-2 downto 2*input_data_width-output_data_width-1);

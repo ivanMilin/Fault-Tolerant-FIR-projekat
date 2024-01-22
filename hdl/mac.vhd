@@ -19,7 +19,7 @@ architecture Behavioral of mac is
     
     signal reg_s : STD_LOGIC_VECTOR (2*input_data_width-1 downto 0):=(others=>'0');
 begin
-    process(clk_i)
+    process(clk_i,sec_i)
     begin
         if (clk_i'event and clk_i = '1')then
             reg_s <= sec_i;

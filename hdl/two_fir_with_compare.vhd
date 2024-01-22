@@ -17,10 +17,10 @@ entity two_fir_with_compare is
 end two_fir_with_compare;
 
 architecture Behavioral of two_fir_with_compare is
-    signal first_data_o_s  : STD_LOGIC_VECTOR (output_data_width-1 downto 0) ;
-    signal second_data_o_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0);
+    signal first_data_o_s  : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
+    signal second_data_o_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
     signal error_s : STD_LOGIC := '0';
-    signal data_out_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0);
+    signal data_out_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
 begin     
     first_module : 
     entity work.fir_param(Behavioral)
@@ -53,7 +53,7 @@ begin
         end if;        
     end process;
     
-    process(clk_in)
+    process(clk_in,first_data_o_s,we_in)
     begin
         if(rising_edge(clk_in))then
             if we_in = '1' then
