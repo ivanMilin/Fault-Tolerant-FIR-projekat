@@ -37,8 +37,11 @@ signal data_from_input_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);
 signal data_to_output_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);    
 
 signal address_input_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
+signal address_input_bram_s  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
 
-signal address_output_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0'); 
+signal address_output_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
+signal address_output_bram_s  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');  
+
 signal fir_ready_s : std_logic;
 signal ready_s : std_logic;
 begin
@@ -46,10 +49,11 @@ begin
     process(clk, start)
     begin
         if(rising_edge(clk)) then
-            if(start = '1') then
-                address_input_bram <= std_logic_vector(unsigned(address_input_bram) + to_unsigned(1,ADDR_SIZE));  
+            if(rising_edge(start)) then
+                address_input_bram <= address_input_bram_s;  
+                address_input_bram_s <= std_logic_vector(unsigned(address_input_bram_s) + to_unsigned(1,ADDR_SIZE));
             else
-                address_input_bram <= address_input_bram;      
+                address_input_bram <= address_input_bram_s;      
             end if; 
         end if;
     end process;
@@ -66,7 +70,7 @@ begin
 
     pair_and_spare_FIR:
     entity work.replication(Behavioral)
-    generic map(fir_ord => fir_ord, input_data_width => input_data_width , output_data_width => output_data_width , number_of_replication => number_of_replication)
+    generic map(fir_ord => fir_ord, input_data_width => input_data_width , output_data_width => output_data_width+1 , number_of_replication => number_of_replication)
     port map(
             clk_i => clk,
             we_i  => we,
@@ -82,9 +86,10 @@ begin
     begin
         if(rising_edge(clk)) then
             if(fir_ready_s = '1') then
-                address_output_bram <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));
+                address_output_bram   <= address_output_bram_s ;
+                address_output_bram_s <= std_logic_vector(unsigned(address_output_bram_s) + to_unsigned(1,ADDR_SIZE));
             else
-                address_output_bram <= address_output_bram;
+                address_output_bram <= address_output_bram_s;
             end if;
         end if;         
     end process;        
@@ -103,13 +108,13 @@ begin
     -- generisanje READY signala na jedinicu kad se obradi N odbiraka           
     process(clk,address_output_bram)
     begin
-        if(rising_edge(clk)) then
+        --if(rising_edge(clk)) then
             if(fir_ready_s = '1' and address_output_bram = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE))) then
                 ready_s <= '1';
             else
                 ready_s <= '0';
             end if;
-        end if;    
+        --end if;    
     end process;    
     
     ready <= ready_s;

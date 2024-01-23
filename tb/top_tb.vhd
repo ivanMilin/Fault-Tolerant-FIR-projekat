@@ -29,7 +29,8 @@ architecture Behavioral of tb is
     signal rst_i_s : std_logic;
     signal start_check : std_logic := '0';
     signal addr_read_i_s,addr_write_i_s : std_logic_vector(ADDR_SIZE-1  downto 0);
-    signal start_i_s,ready_i_s : std_logic;
+    signal start_i_s : std_logic := '0'; 
+    signal ready_i_s : std_logic ;
     signal iterration : natural := 4096;
 
 begin
@@ -41,7 +42,7 @@ begin
                 RAM_DEPTH => RAM_DEPTH,
                 ADDR_SIZE => ADDR_SIZE,
                 input_data_width=>in_out_data_width,
-                output_data_width=>in_out_data_width+1,
+                output_data_width=>in_out_data_width,
                 number_of_replication => number_of_replication)
     port map(clk  => clk_i_s,
              rst  => rst_i_s,
@@ -73,6 +74,7 @@ begin
         we_i_s <= '0';
         en_i_s <= '0';
         start_i_s <= '0';
+        addr_read_i_s <= (others => '0');
         
         wait until falling_edge(clk_i_s);
         rst_i_s <= '0';
@@ -100,11 +102,15 @@ begin
             iterration <= iterration + 1 ;
         end loop;
         
+        wait until falling_edge(clk_i_s);
         start_i_s <= '1';
+        wait until falling_edge(clk_i_s);
         
         if(ready_i_s = '1') then
             for i in 0 to RAM_DEPTH-1 loop
                 addr_read_i_s <= std_logic_vector(to_unsigned(i,ADDR_SIZE));
+                wait until falling_edge(clk_i_s);
+                report "EVO MEEEE" severity failure;
             end loop;
         end if;
             

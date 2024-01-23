@@ -15,8 +15,8 @@ entity replication is
               coef_addr_i : in STD_LOGIC_VECTOR(log2c(fir_ord+1) - 1 downto 0);
               coef_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
               data_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
-              data_outt  : out STD_LOGIC_VECTOR (output_data_width - 2 downto 0));
-              --fir_ready  : out std_logic
+              data_outt  : out STD_LOGIC_VECTOR (output_data_width - 2 downto 0); -- 23 downto 0
+              fir_ready  : out std_logic);
 end replication;
 
 architecture Behavioral of replication is
@@ -123,13 +123,15 @@ begin
         if(rising_edge(clk_i)) then
             if(counter = checker) then
                 data_outt_s <= (others => '0'); 
+                fir_ready_s <= '0';
             else
                 data_outt_s <= data_from_mux_1(output_data_width-1 downto 1);
+                fir_ready_s <= '1';
             end if;
         end if;
     end process;
     
     data_outt <= data_outt_s; 
-    --fir_ready <= fir_ready_s;
+    fir_ready <= fir_ready_s;
 
 end Behavioral;
