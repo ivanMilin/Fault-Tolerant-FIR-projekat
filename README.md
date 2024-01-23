@@ -12,3 +12,6 @@ Forsiranje 5 grešaka kod 6-modularnog sistema
 
 Forsiranje 6 grešaka kod 7-modularnog sistema
 ![NuGet](/images/seven_replication.PNG)
+
+Nakon dodavanja BRAMova : 
+![NuGet](/images/waveform_with_BRAM.PNG)
