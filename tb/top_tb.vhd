@@ -19,6 +19,7 @@ end tb;
 architecture Behavioral of tb is
     constant period : time := 20 ns;
     signal clk_i_s : std_logic;
+    file output_check_vector : text open read_mode is "..\..\..\..\..\data\expected.txt";
     file input_test_vector : text open read_mode is "..\..\..\..\..\data\input.txt";
     file input_coef : text open read_mode is "..\..\..\..\..\data\coef.txt";
     signal data_i_s : std_logic_vector(in_out_data_width-1 downto 0);
@@ -31,7 +32,7 @@ architecture Behavioral of tb is
     signal addr_read_i_s,addr_write_i_s : std_logic_vector(ADDR_SIZE-1  downto 0);
     signal start_i_s : std_logic := '0'; 
     signal ready_i_s : std_logic ;
-    signal iterration : natural := 4096;
+    signal iterration : natural := 0;
 
 begin
 
@@ -69,6 +70,8 @@ begin
     stim_process:
     process
         variable tv : line;
+        variable check_v : line;
+        variable tmp : std_logic_vector(in_out_data_width-1 downto 0);
     begin
         rst_i_s <= '1';
         we_i_s <= '0';
@@ -76,46 +79,59 @@ begin
         start_i_s <= '0';
         addr_read_i_s <= (others => '0');
         
-        wait until falling_edge(clk_i_s);
+        wait until rising_edge(clk_i_s);
         rst_i_s <= '0';
         en_i_s <= '1';
         
         --upis koeficijenata
         data_i_s <= (others=>'0');
-        wait until falling_edge(clk_i_s);
+        wait until rising_edge(clk_i_s);
         
         for i in 0 to fir_ord loop
             we_i_s <= '1';
             coef_addr_i_s <= std_logic_vector(to_unsigned(i,log2c(fir_ord)));
             readline(input_coef,tv);
             coef_i_s <= to_std_logic_vector(string(tv));
-            wait until falling_edge(clk_i_s);
+            wait until rising_edge(clk_i_s);
         end loop;
         
         --ulaz za filtriranje
-        while not endfile(input_test_vector) loop
+        --while not endfile(input_test_vector) loop
+        for i in 0 to RAM_DEPTH-1 loop
             readline(input_test_vector,tv);
             data_i_s <= to_std_logic_vector(string(tv));
-            addr_write_i_s <= std_logic_vector(to_unsigned(iterration,ADDR_SIZE));
-            wait until falling_edge(clk_i_s);
+            addr_write_i_s <= std_logic_vector(to_unsigned(i,ADDR_SIZE));
+            wait until rising_edge(clk_i_s);
             start_check <= '1';
             iterration <= iterration + 1 ;
         end loop;
         
-        wait until falling_edge(clk_i_s);
+        wait until rising_edge(clk_i_s);
         start_i_s <= '1';
-        wait until falling_edge(clk_i_s);
+        wait until rising_edge(clk_i_s);
         
-        if(ready_i_s = '1') then
-            for i in 0 to RAM_DEPTH-1 loop
-                addr_read_i_s <= std_logic_vector(to_unsigned(i,ADDR_SIZE));
-                wait until falling_edge(clk_i_s);
-                report "EVO MEEEE" severity failure;
-            end loop;
-        end if;
+        wait until rising_edge(ready_i_s);
+        start_i_s <= '0';
+        for i in 0 to RAM_DEPTH-1 loop
+            addr_read_i_s <= std_logic_vector(to_unsigned(i,ADDR_SIZE));
+            wait until rising_edge(clk_i_s);
+        end loop;
+        
+        for i in 0 to RAM_DEPTH-1 loop
+            wait until rising_edge(clk_i_s);
+        end loop;
+        
+        while(true)loop
+            wait until rising_edge(clk_i_s);
+            readline(output_check_vector,check_v);
+            tmp := to_std_logic_vector(string(check_v));
+            if(abs(signed(tmp) - signed(data_o_s)) > "000000000000000000000111")then
+                report "result mismatch!" severity failure;
+            end if;
+        end loop;
             
         start_check <= '0';
         report "verification done!" severity failure;
     end process;
-    
+
 end Behavioral;

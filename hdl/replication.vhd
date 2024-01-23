@@ -42,7 +42,7 @@ architecture Behavioral of replication is
     -- Pomocni signal kojim ce se redukovati koji selekcioni sigal treba da se promeni
     signal counter : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(1, log2c(number_of_replication)));
     signal checker : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(number_of_replication, log2c(number_of_replication)));
-    signal data_out_s  : STD_LOGIC_VECTOR (output_data_width - 2 downto 0) := (others => '0');  
+    --signal data_out_s  : STD_LOGIC_VECTOR (output_data_width - 2 downto 0) := (others => '0');  
     signal data_outt_s : STD_LOGIC_VECTOR (output_data_width - 2 downto 0) := (others => '0');  
     signal fir_ready_s : std_logic := '0'; 
 begin

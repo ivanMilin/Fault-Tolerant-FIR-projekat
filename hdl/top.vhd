@@ -49,11 +49,11 @@ begin
     process(clk, start)
     begin
         if(rising_edge(clk)) then
-            if(rising_edge(start)) then
-                address_input_bram <= address_input_bram_s;  
-                address_input_bram_s <= std_logic_vector(unsigned(address_input_bram_s) + to_unsigned(1,ADDR_SIZE));
+            if( start = '1' and address_input_bram <= std_logic_vector(to_unsigned(RAM_DEPTH-1,ADDR_SIZE))) then
+                address_input_bram <= std_logic_vector(unsigned(address_input_bram) + to_unsigned(1,ADDR_SIZE));  
+                --address_input_bram_s <= std_logic_vector(unsigned(address_input_bram_s) + to_unsigned(1,ADDR_SIZE));      
             else
-                address_input_bram <= address_input_bram_s;      
+                address_input_bram <= address_input_bram ;
             end if; 
         end if;
     end process;
@@ -85,11 +85,11 @@ begin
     process(clk,fir_ready_s, address_output_bram)
     begin
         if(rising_edge(clk)) then
-            if(fir_ready_s = '1') then
-                address_output_bram   <= address_output_bram_s ;
-                address_output_bram_s <= std_logic_vector(unsigned(address_output_bram_s) + to_unsigned(1,ADDR_SIZE));
+            if(start = '1' and fir_ready_s = '1') then
+                address_output_bram   <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));
+                --address_output_bram_s <= std_logic_vector(unsigned(address_output_bram_s) + to_unsigned(1,ADDR_SIZE));
             else
-                address_output_bram <= address_output_bram_s;
+                address_output_bram <= address_output_bram;
             end if;
         end if;         
     end process;        
@@ -109,7 +109,7 @@ begin
     process(clk,address_output_bram)
     begin
         --if(rising_edge(clk)) then
-            if(fir_ready_s = '1' and address_output_bram = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE))) then
+            if(address_output_bram = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE))) then
                 ready_s <= '1';
             else
                 ready_s <= '0';
