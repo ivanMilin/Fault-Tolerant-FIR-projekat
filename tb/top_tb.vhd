@@ -70,8 +70,6 @@ begin
     stim_process:
     process
         variable tv : line;
-        variable check_v : line;
-        variable tmp : std_logic_vector(in_out_data_width-1 downto 0);
     begin
         rst_i_s <= '1';
         we_i_s <= '0';
@@ -120,8 +118,19 @@ begin
         for i in 0 to RAM_DEPTH-1 loop
             wait until rising_edge(clk_i_s);
         end loop;
-        
-        while(true)loop
+        start_check <= '0';
+        report "verification done!" severity failure;
+    end process;
+    
+    process
+        variable check_v : line;
+        variable tmp : std_logic_vector(in_out_data_width-1 downto 0);
+    begin
+        wait until rising_edge(ready_i_s);
+        for i in 0 to 5 loop 
+            wait until rising_edge(clk_i_s);
+        end loop;
+        while(ready_i_s = '1' )loop
             wait until rising_edge(clk_i_s);
             readline(output_check_vector,check_v);
             tmp := to_std_logic_vector(string(check_v));
@@ -129,9 +138,6 @@ begin
                 report "result mismatch!" severity failure;
             end if;
         end loop;
-            
-        start_check <= '0';
-        report "verification done!" severity failure;
     end process;
 
 end Behavioral;

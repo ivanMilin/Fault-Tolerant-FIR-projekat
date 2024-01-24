@@ -39,11 +39,13 @@ signal data_to_output_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);
 signal address_input_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
 signal address_input_bram_s  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
 
+signal addr_read_s : std_logic_vector(ADDR_SIZE  downto 0) := (others => '0');
+
 signal address_output_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
 signal address_output_bram_s  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');  
 
 signal fir_ready_s : std_logic;
-signal ready_s : std_logic;
+signal ready_s : std_logic := '0';
 begin
     --Kada se postavi start na jedinicu pocinju da se citaju podaci iz ulaznog BRAMa
     process(clk, start)
@@ -105,11 +107,19 @@ begin
               data_in  => data_to_output_bram,
               data_out => data_out);
             
+    process(clk, addr_read)
+    begin
+        if(addr_read = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE))) then
+            addr_read_s <= std_logic_vector(to_unsigned(RAM_DEPTH,ADDR_SIZE+1));
+        else     
+            addr_read_s <= std_logic_vector(to_unsigned(0,ADDR_SIZE+1));
+        end if;
+    end process;
     -- generisanje READY signala na jedinicu kad se obradi N odbiraka           
     process(clk,address_output_bram)
     begin
         --if(rising_edge(clk)) then
-            if(address_output_bram = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE))) then
+            if(address_output_bram = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE)) and addr_read_s < std_logic_vector(to_unsigned(RAM_DEPTH,ADDR_SIZE+1))) then
                 ready_s <= '1';
             else
                 ready_s <= '0';
