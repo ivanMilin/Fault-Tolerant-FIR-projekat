@@ -61,30 +61,17 @@ begin
                       error_out => data_to_mux(i)(0));
     end generate;
     
-    -- izbacivanje najnizeg porta jer on predstavlja port namenjen za error
+--    -- izbacivanje najnizeg porta jer on predstavlja port namenjen za error
+    data_to_mux_1(0) <=  data_to_mux(0);
     assigning_value_minus_1_for_mux1: 
-    process(clk_i,data_to_mux) 
-    begin
-        if(rising_edge(clk_i)) then
-            for i in 0 to number_of_replication-2 loop
-                if(i = 0) then
-                data_to_mux_1(0) <=  data_to_mux(0);  
-                else
-                data_to_mux_1(i) <=  data_to_mux(i+1);
-                end if;
-            end loop;
-        end if;
-    end process;
-    
+    for i in 0 to number_of_replication-2 generate
+        data_to_mux_1(i) <=  data_to_mux(i+1);
+    end generate;
+    -- izbacivanje najnizeg porta jer on predstavlja port namenjen za error
     assigning_value_minus_1_for_mux2: 
-    process(clk_i,data_to_mux) 
-    begin
-        if(rising_edge(clk_i)) then
-            for i in 0 to number_of_replication-2 loop
-                data_to_mux_2(i) <=  data_to_mux(i+1);
-            end loop;
-        end if;
-    end process;
+    for i in 0 to number_of_replication-2 generate
+        data_to_mux_2(i) <=  data_to_mux(i+1);
+    end generate;
     
     process(clk_i,error_from_comparator, data_from_mux_1(0),data_from_mux_2(0),sel_data_1,sel_data_2,counter)
     begin
