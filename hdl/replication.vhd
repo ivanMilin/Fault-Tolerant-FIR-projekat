@@ -7,7 +7,7 @@ entity replication is
     generic ( fir_ord : natural := 20;
               input_data_width : natural := 24;
               output_data_width : natural := 25;
-              number_of_replication : natural := 7);
+              number_of_replication : natural := 5);
       
         Port( clk_i : in STD_LOGIC;
               we_i  : in STD_LOGIC;
@@ -61,14 +61,15 @@ begin
                       error_out => data_to_mux(i)(0));
     end generate;
     
---    -- izbacivanje najnizeg porta jer on predstavlja port namenjen za error
+    -- Prvi MUX prima izlaze svih modula, osim izlaz od drugog modula(1,3,4,5...)
     data_to_mux_1(0) <=  data_to_mux(0);
-    assigning_value_minus_1_for_mux1: 
-    for i in 0 to number_of_replication-2 generate
+    assigning_value_for_mux1: 
+    for i in 1 to number_of_replication-2 generate
         data_to_mux_1(i) <=  data_to_mux(i+1);
     end generate;
-    -- izbacivanje najnizeg porta jer on predstavlja port namenjen za error
-    assigning_value_minus_1_for_mux2: 
+    
+    -- Drugi MUX prima izlaze svih modula, osim izlaz od prvog modula(2,3,4,5...)
+    assigning_value_for_mux2: 
     for i in 0 to number_of_replication-2 generate
         data_to_mux_2(i) <=  data_to_mux(i+1);
     end generate;
