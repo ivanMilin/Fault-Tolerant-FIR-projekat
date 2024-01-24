@@ -4,20 +4,22 @@ use IEEE.NUMERIC_STD.ALL;
 use work.util_pkg.all;
 
 entity fir_param is
-    generic(fir_ord : natural := 5;
-            input_data_width : natural := 24;
-            output_data_width : natural := 24);
-    Port ( clk_i : in STD_LOGIC;
-           we_i : in STD_LOGIC;
-           coef_addr_i : in std_logic_vector(log2c(fir_ord+1)-1 downto 0);
-           coef_i : in STD_LOGIC_VECTOR (input_data_width-1 downto 0);
-           data_i : in STD_LOGIC_VECTOR (input_data_width-1 downto 0);
-           data_o : out STD_LOGIC_VECTOR (output_data_width-1 downto 0));
+    generic( fir_ord : natural := 5;
+             input_data_width : natural := 24;
+             output_data_width : natural := 24);
+      
+      port ( clk_i : in STD_LOGIC;
+             we_i : in STD_LOGIC;
+             coef_addr_i : in std_logic_vector(log2c(fir_ord+1)-1 downto 0);
+             coef_i : in STD_LOGIC_VECTOR (input_data_width-1 downto 0);
+             data_i : in STD_LOGIC_VECTOR (input_data_width-1 downto 0);
+             data_o : out STD_LOGIC_VECTOR (output_data_width-1 downto 0));
 end fir_param;
 
 architecture Behavioral of fir_param is
     type std_2d is array (fir_ord downto 0) of std_logic_vector(2*input_data_width-1 downto 0);
     signal mac_inter : std_2d:=(others=>(others=>'0'));
+    
     type coef_t is array (fir_ord downto 0) of std_logic_vector(input_data_width-1 downto 0);
     signal b_s : coef_t := (others=>(others=>'0')); 
                                                            

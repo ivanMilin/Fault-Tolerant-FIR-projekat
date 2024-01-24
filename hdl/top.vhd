@@ -18,12 +18,12 @@ entity top is
              we  : in std_logic;
              rst : in std_logic;
              
-             addr_read : in std_logic_vector(ADDR_SIZE-1  downto 0);
+             addr_read  : in std_logic_vector(ADDR_SIZE-1  downto 0);
              addr_write : in std_logic_vector(ADDR_SIZE-1  downto 0);
              data_in    : in std_logic_vector(RAM_WIDTH - 1 downto 0);
              
              coef_addr_i : in STD_LOGIC_VECTOR(log2c(fir_ord+1) - 1 downto 0);
-             coef_i  : in  STD_LOGIC_VECTOR (input_data_width - 1 downto 0);
+             coef_i      : in STD_LOGIC_VECTOR(input_data_width - 1 downto 0);
              
              data_out : out std_logic_vector(RAM_WIDTH - 1 downto 0);
              

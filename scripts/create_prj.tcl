@@ -31,6 +31,7 @@ set_property SOURCE_SET sources_1 [get_filesets sim_1]
 #add_files -fileset sim_1 -norecurse ../tb/replication_tb.vhd
 add_files -fileset sim_1 -norecurse ../tb/top_tb.vhd
 add_files -fileset constrs_1 -norecurse ../constraint/clock_constraint.xdc
+add_files -fileset sim_1 -norecurse ../waveform_tb_behav.wcfg
 
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1

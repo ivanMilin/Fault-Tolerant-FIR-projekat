@@ -10,10 +10,10 @@ entity bram is
        port ( clk : in std_logic;
               en : in std_logic;
               we : in std_logic;
-              addr_read : in std_logic_vector(ADDR_SIZE-1  downto 0);
+              addr_read  : in std_logic_vector(ADDR_SIZE-1  downto 0);
               addr_write : in std_logic_vector(ADDR_SIZE-1  downto 0);
-              data_in : in std_logic_vector(RAM_WIDTH - 1 downto 0);
-              data_out : out std_logic_vector(RAM_WIDTH - 1 downto 0));
+              data_in    : in std_logic_vector(RAM_WIDTH - 1 downto 0);
+              data_out   : out std_logic_vector(RAM_WIDTH - 1 downto 0));
 end bram;
 
 architecture Behavioral of bram is
