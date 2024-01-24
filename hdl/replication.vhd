@@ -42,7 +42,7 @@ architecture Behavioral of replication is
     -- Pomocni signal kojim ce se redukovati koji selekcioni sigal treba da se promeni
     signal counter : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(1, log2c(number_of_replication)));
     signal checker : unsigned (log2c(number_of_replication) - 1 downto 0) := (to_unsigned(number_of_replication, log2c(number_of_replication)));
-    --signal data_out_s  : STD_LOGIC_VECTOR (output_data_width - 2 downto 0) := (others => '0');  
+    
     signal data_outt_s : STD_LOGIC_VECTOR (output_data_width - 2 downto 0) := (others => '0');  
     signal fir_ready_s : std_logic := '0'; 
 begin
@@ -100,13 +100,15 @@ begin
             end if;
         end if;                   
     end process;          
-          
+    
+    -- parametrizovani muxevi      
     process(sel_data_1, sel_data_2,data_to_mux_1,data_to_mux_2)
     begin
         data_from_mux_1 <= data_to_mux_1(to_integer(unsigned(sel_data_1)));
         data_from_mux_2 <= data_to_mux_2(to_integer(unsigned(sel_data_2)));
     end process;
     
+    -- detektovanje greske
     process(clk_i,data_from_mux_1(output_data_width-1 downto 1),data_from_mux_2(output_data_width-1 downto 1)) 
     begin
         if(rising_edge(clk_i)) then
@@ -118,6 +120,7 @@ begin
         end if;
     end process;
     
+    -- kada counter dostigne maksimalan dozvoljen broj gresaka izlaz postaje NULA
     process(clk_i,counter,checker,data_from_mux_1(output_data_width-1 downto 1)) 
     begin
         if(rising_edge(clk_i)) then

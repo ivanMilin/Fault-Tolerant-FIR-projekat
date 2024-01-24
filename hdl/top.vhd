@@ -52,8 +52,7 @@ begin
     begin
         if(rising_edge(clk)) then
             if( start = '1' and address_input_bram <= std_logic_vector(to_unsigned(RAM_DEPTH-1,ADDR_SIZE))) then
-                address_input_bram <= std_logic_vector(unsigned(address_input_bram) + to_unsigned(1,ADDR_SIZE));  
-                --address_input_bram_s <= std_logic_vector(unsigned(address_input_bram_s) + to_unsigned(1,ADDR_SIZE));      
+                address_input_bram <= std_logic_vector(unsigned(address_input_bram) + to_unsigned(1,ADDR_SIZE));        
             else
                 address_input_bram <= address_input_bram ;
             end if; 
@@ -89,7 +88,6 @@ begin
         if(rising_edge(clk)) then
             if(start = '1' and fir_ready_s = '1') then
                 address_output_bram   <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));
-                --address_output_bram_s <= std_logic_vector(unsigned(address_output_bram_s) + to_unsigned(1,ADDR_SIZE));
             else
                 address_output_bram <= address_output_bram;
             end if;
@@ -115,16 +113,15 @@ begin
             addr_read_s <= std_logic_vector(to_unsigned(0,ADDR_SIZE+1));
         end if;
     end process;
+    
     -- generisanje READY signala na jedinicu kad se obradi N odbiraka           
     process(clk,address_output_bram)
     begin
-        --if(rising_edge(clk)) then
-            if(address_output_bram = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE)) and addr_read_s < std_logic_vector(to_unsigned(RAM_DEPTH,ADDR_SIZE+1))) then
-                ready_s <= '1';
-            else
-                ready_s <= '0';
-            end if;
-        --end if;    
+        if(address_output_bram = std_logic_vector(to_unsigned(RAM_DEPTH - 1,ADDR_SIZE)) and addr_read_s < std_logic_vector(to_unsigned(RAM_DEPTH,ADDR_SIZE+1))) then
+            ready_s <= '1';
+        else
+            ready_s <= '0';
+        end if;
     end process;    
     
     ready <= ready_s;

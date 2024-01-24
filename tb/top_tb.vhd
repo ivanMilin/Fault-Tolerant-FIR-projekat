@@ -122,6 +122,7 @@ begin
         report "verification done!" severity failure;
     end process;
     
+    check_process:
     process
         variable check_v : line;
         variable tmp : std_logic_vector(in_out_data_width-1 downto 0);
@@ -139,5 +140,4 @@ begin
             end if;
         end loop;
     end process;
-
 end Behavioral;
