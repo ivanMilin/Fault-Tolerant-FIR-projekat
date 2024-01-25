@@ -8,7 +8,7 @@ entity top is
              RAM_DEPTH : integer := 4096;
              ADDR_SIZE : integer := 12;
              
-             fir_ord : natural := 20;
+             fir_ord : natural := 5;
              input_data_width : natural := 24;
              output_data_width : natural := 24;
              number_of_replication : natural := 5);

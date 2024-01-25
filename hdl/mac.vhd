@@ -19,14 +19,18 @@ architecture Behavioral of mac is
     attribute use_dsp of Behavioral : architecture is "yes";
     
     signal reg_s : STD_LOGIC_VECTOR (2*input_data_width-1 downto 0):=(others=>'0');
+    signal reg_in1 : STD_LOGIC_VECTOR (input_data_width-1 downto 0):=(others=>'0');
+    signal reg_in2 : STD_LOGIC_VECTOR (input_data_width-1 downto 0):=(others=>'0');
 begin
     process(clk_i,sec_i)
     begin
         if (clk_i'event and clk_i = '1')then
-            reg_s <= sec_i;
+            reg_in1 <= u_i;
+            reg_in2 <= b_i;
+            reg_s   <= std_logic_vector(signed(sec_i) + (signed(reg_in2) * signed(reg_in1)));
         end if;
     end process;
     
-    sec_o <= std_logic_vector(signed(reg_s) + (signed(u_i) * signed(b_i)));
+    sec_o <= reg_s;
     
 end Behavioral;

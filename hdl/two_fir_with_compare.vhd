@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.ALL;
 use work.util_pkg.all;
 
 entity two_fir_with_compare is
-    generic( fir_ord : natural := 20;
+    generic( fir_ord : natural := 5;
              input_data_width : natural := 24;
              output_data_width : natural := 24);
       
@@ -20,8 +20,13 @@ end two_fir_with_compare;
 architecture Behavioral of two_fir_with_compare is
     signal first_data_o_s  : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
     signal second_data_o_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
-    signal error_s : STD_LOGIC := '0';
+    signal error_s : STD_LOGIC;
     signal data_out_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
+    ---------------------------------------------------------------------------------------
+    attribute dont_touch : string;                  
+    attribute dont_touch of first_data_o_s : signal is "true";                  
+    attribute dont_touch of second_data_o_s : signal is "true"; 
+    ---------------------------------------------------------------------------------------
 begin     
     first_module : 
     entity work.fir_param(Behavioral)

@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.ALL;
 use work.util_pkg.all;
 
 entity replication is
-    generic ( fir_ord : natural := 20;
+    generic ( fir_ord : natural := 5;
               input_data_width : natural := 24;
               output_data_width : natural := 25;
               number_of_replication : natural := 5);
@@ -45,6 +45,15 @@ architecture Behavioral of replication is
     
     signal data_outt_s : STD_LOGIC_VECTOR (output_data_width - 2 downto 0) := (others => '0');  
     signal fir_ready_s : std_logic := '0'; 
+    
+    -------------------------------------------------------------
+    attribute dont_touch : string;                  
+    attribute dont_touch of data_to_mux : signal is "true";                  
+    attribute dont_touch of data_to_mux_1 : signal is "true";
+    attribute dont_touch of data_to_mux_2 : signal is "true";
+    attribute dont_touch of sel_data_1 : signal is "true"; 
+    attribute dont_touch of sel_data_2 : signal is "true";
+    -------------------------------------------------------------
 begin
     
     replication_of_fir: 
@@ -89,12 +98,11 @@ begin
         end if;                   
     end process;          
     
-    -- parametrizovani muxevi      
-    process(sel_data_1, sel_data_2,data_to_mux_1,data_to_mux_2)
-    begin
-        data_from_mux_1 <= data_to_mux_1(to_integer(unsigned(sel_data_1)));
-        data_from_mux_2 <= data_to_mux_2(to_integer(unsigned(sel_data_2)));
-    end process;
+    -- MUX 1    
+    data_from_mux_1 <= data_to_mux_1(to_integer(unsigned(sel_data_1(log2c(number_of_replication)-1 downto 0))));
+    
+    -- MUX 2
+    data_from_mux_2 <= data_to_mux_2(to_integer(unsigned(sel_data_2(log2c(number_of_replication)-1 downto 0))));
     
     -- detektovanje greske
     process(clk_i,data_from_mux_1(output_data_width-1 downto 1),data_from_mux_2(output_data_width-1 downto 1)) 
