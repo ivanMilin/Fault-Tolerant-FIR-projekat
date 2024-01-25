@@ -9,7 +9,7 @@ use work.util_pkg.all;
 entity tb is
     generic(in_out_data_width : natural := 24;
             fir_ord : natural := 5;
-            number_of_replication : natural := 7); 
+            number_of_replication : natural := 5); 
 --  Port ( );
 end tb;
 
@@ -99,9 +99,9 @@ begin
 --        variable tmp : std_logic_vector(in_out_data_width-1 downto 0);
 --    begin       
 --        wait until start_check = '1';
---        for i in 0 to 2 loop 
---            wait until rising_edge(clk_i_s);
---        end loop;
+--        --for i in 0 to 5 loop 
+--        --    wait until rising_edge(clk_i_s);
+--        --end loop;
 --        while(true)loop
 --            wait until rising_edge(clk_i_s);
 --            readline(output_check_vector,check_v);

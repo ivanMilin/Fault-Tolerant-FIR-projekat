@@ -10,9 +10,9 @@ entity tb is
     generic(RAM_WIDTH : integer := 24;
             RAM_DEPTH : integer := 4096;
             ADDR_SIZE : integer := 12;
-            fir_ord : natural := 20;
+            fir_ord : natural := 5;
             in_out_data_width : natural := 24;
-            number_of_replication : natural := 7); 
+            number_of_replication : natural := 5); 
 --  Port ( );
 end tb;
 
@@ -131,7 +131,7 @@ begin
         for i in 0 to 5 loop 
             wait until rising_edge(clk_i_s);
         end loop;
-        while(ready_i_s = '1' )loop
+        while(ready_i_s = '0')loop
             wait until rising_edge(clk_i_s);
             readline(output_check_vector,check_v);
             tmp := to_std_logic_vector(string(check_v));
