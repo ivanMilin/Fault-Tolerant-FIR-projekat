@@ -122,7 +122,7 @@ begin
         if(rising_edge(clk_i)) then
             if(counter = checker) then
                 data_outt_s <= (others => '0'); 
-                fir_ready_s <= '0';
+                --fir_ready_s <= '0';
             else
                 data_outt_s <= data_from_mux_1(output_data_width-1 downto 1);
                 fir_ready_s <= '1';
