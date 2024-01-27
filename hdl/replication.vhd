@@ -7,7 +7,7 @@ entity replication is
     generic ( fir_ord : natural := 5;
               input_data_width : natural := 24;
               output_data_width : natural := 25;
-              number_of_replication : natural := 5);
+              number_of_replication : natural := 6);
       
         Port( clk_i : in STD_LOGIC;
               we_i  : in STD_LOGIC;

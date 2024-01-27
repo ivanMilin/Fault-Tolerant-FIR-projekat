@@ -11,7 +11,7 @@ entity top is
              fir_ord : natural := 5;
              input_data_width : natural := 24;
              output_data_width : natural := 24;
-             number_of_replication : natural := 5);
+             number_of_replication : natural := 6);
        
        port( clk : in std_logic;
              en  : in std_logic;
