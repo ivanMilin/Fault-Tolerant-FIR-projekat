@@ -19,7 +19,7 @@ end tb;
 architecture Behavioral of tb is
     constant period : time := 20 ns;
     signal clk_i_s : std_logic;
-    file output_check_vector : text open read_mode is "..\..\..\..\..\data\expected.txt";
+    file output_check_vector : text open read_mode is "..\..\..\..\..\data\expected_top.txt";
     file input_test_vector : text open read_mode is "..\..\..\..\..\data\input.txt";
     file input_coef : text open read_mode is "..\..\..\..\..\data\coef.txt";
     signal data_i_s : std_logic_vector(in_out_data_width-1 downto 0);
@@ -127,17 +127,14 @@ begin
         variable check_v : line;
         variable tmp : std_logic_vector(in_out_data_width-1 downto 0);
     begin
-        wait until rising_edge(ready_i_s);
-        for i in 0 to 5 loop 
-            wait until rising_edge(clk_i_s);
-        end loop;
-        while(ready_i_s = '0')loop
-            wait until rising_edge(clk_i_s);
+        wait until rising_edge(clk_i_s);
+        while(ready_i_s = '1')loop
             readline(output_check_vector,check_v);
             tmp := to_std_logic_vector(string(check_v));
             if(abs(signed(tmp) - signed(data_o_s)) > "000000000000000000000111")then
                 report "result mismatch!" severity failure;
             end if;
+            wait until rising_edge(clk_i_s);
         end loop;
     end process;
 end Behavioral;
