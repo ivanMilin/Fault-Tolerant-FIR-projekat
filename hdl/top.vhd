@@ -35,6 +35,7 @@ architecture Behavioral of top is
  
 signal data_from_input_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);
 signal data_to_output_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);    
+signal data_to_output_bram_s : std_logic_vector(RAM_WIDTH - 1 downto 0);
 
 signal address_input_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
 signal address_input_bram_s  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
@@ -88,8 +89,10 @@ begin
         if(rising_edge(clk)) then
             if(start = '1' and fir_ready_s = '1') then
                 address_output_bram   <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));
+                data_to_output_bram_s <= data_to_output_bram; 
             else
                 address_output_bram <= address_output_bram;
+                data_to_output_bram_s <= data_to_output_bram_s;
             end if;
         end if;         
     end process;        
@@ -102,7 +105,7 @@ begin
               we  => we,
               addr_read  => addr_read, 
               addr_write => address_output_bram,
-              data_in  => data_to_output_bram,
+              data_in  => data_to_output_bram_s,
               data_out => data_out);
             
     process(clk, addr_read)

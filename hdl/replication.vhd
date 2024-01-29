@@ -83,9 +83,15 @@ begin
         data_to_mux_2(i) <=  data_to_mux(i+1);
     end generate;
     
+    -- MUX 1    
+    data_from_mux_1 <= data_to_mux_1(to_integer(unsigned(sel_data_1(log2c(number_of_replication)-1 downto 0))));
+    
+    -- MUX 2
+    data_from_mux_2 <= data_to_mux_2(to_integer(unsigned(sel_data_2(log2c(number_of_replication)-1 downto 0))));
+    
     process(clk_i,error_from_comparator, data_from_mux_1(0),data_from_mux_2(0),sel_data_1,sel_data_2,counter)
     begin
-        --if(rising_edge(clk_i)) then
+        if(rising_edge(clk_i)) then
             if((error_from_comparator = '1' and data_from_mux_1(0) = '1') and sel_data_1 /= std_logic_vector(counter) and counter < checker) then  
                 sel_data_1 <= std_logic_vector(counter);
                 counter <= counter + 1;
@@ -95,25 +101,21 @@ begin
             else
                 counter <= counter;
             end if;
-        --end if;                   
-    end process;          
-    
-    -- MUX 1    
-    data_from_mux_1 <= data_to_mux_1(to_integer(unsigned(sel_data_1)));
-    
-    -- MUX 2
-    data_from_mux_2 <= data_to_mux_2(to_integer(unsigned(sel_data_2)));
+        end if;                   
+    end process;         
     
     -- detektovanje greske
     process(clk_i,data_from_mux_1(output_data_width-1 downto 1),data_from_mux_2(output_data_width-1 downto 1)) 
     begin
-        --if(rising_edge(clk_i)) then
+        if(rising_edge(clk_i)) then
             if(data_from_mux_1(output_data_width-1 downto 1) /= data_from_mux_2(output_data_width-1 downto 1)) then
-                error_from_comparator <= '1';    
+                error_from_comparator <= '1';
+                fir_ready_s <= '0';
             else
                 error_from_comparator <= '0';
+                fir_ready_s <= '1';
             end if; 
-        --end if;
+        end if;
     end process;
     
     -- kada counter dostigne maksimalan dozvoljen broj gresaka izlaz postaje NULA
@@ -124,12 +126,11 @@ begin
                 data_outt_s <= (others => '0'); 
             else
                 data_outt_s <= data_from_mux_1(output_data_width-1 downto 1);
-                fir_ready_s <= '1';
             end if;
         end if;
     end process;
     
     data_outt <= data_outt_s; 
     fir_ready <= fir_ready_s;
-
+    
 end Behavioral;

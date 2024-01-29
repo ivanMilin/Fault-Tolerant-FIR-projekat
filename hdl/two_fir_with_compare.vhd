@@ -20,7 +20,7 @@ end two_fir_with_compare;
 architecture Behavioral of two_fir_with_compare is
     signal first_data_o_s  : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
     signal second_data_o_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
-    signal error_reg_s, error_next_s : STD_LOGIC;
+    signal error_s : STD_LOGIC;
     signal data_out_s : STD_LOGIC_VECTOR (output_data_width-1 downto 0) := (others => '0');
     ---------------------------------------------------------------------------------------
     attribute dont_touch : string;                  
@@ -50,27 +50,26 @@ begin
             data_o => second_data_o_s); 
           
     error_detection:
-    process(first_data_o_s,second_data_o_s) 
+    process(clk_in,first_data_o_s,second_data_o_s) 
     begin  
-        if( first_data_o_s/= second_data_o_s) then
-            error_reg_s <= '1';
-        else
-            error_reg_s <= '0';
-        end if;        
+        if(rising_edge(clk_in)) then
+            if( first_data_o_s/= second_data_o_s) then
+                error_s <= '1';
+            end if;
+        end if;                
     end process;
     
     process(clk_in,first_data_o_s,we_in)
     begin
         if(rising_edge(clk_in))then
             if we_in = '1' then
-                data_out_s   <= first_data_o_s; 
-                error_next_s <= error_reg_s;
+                data_out_s <= first_data_o_s; 
             else
-                data_out_s  <= (others => '0');
+                data_out_s  <= (others => '0'); 
             end if;
         end if;
     end process;
     
-    error_out <= error_next_s;
+    error_out <= error_s;
     data_out  <= data_out_s;
 end Behavioral;

@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
-      <ZoomEndTime time="1,336.000000001 ms"></ZoomEndTime>
-      <Cursor1Time time="0.000000000 ms"></Cursor1Time>
+      <ZoomStartTime time="42.785000 us"></ZoomStartTime>
+      <ZoomEndTime time="172.785001 us"></ZoomEndTime>
+      <Cursor1Time time="250.000000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="170"></NameColumnWidth>
       <ValueColumnWidth column_width="78"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="8" />
    <wvobject fp_name="/tb/clk_i_s" type="logic">
       <obj_property name="ElementShortName">clk_i_s</obj_property>
       <obj_property name="ObjectShortName">clk_i_s</obj_property>
@@ -81,18 +81,9 @@
       <obj_property name="radix_fractionWidth">24</obj_property>
       <obj_property name="radix_otherWidth">0</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb/addr_read_i_s" type="array">
-      <obj_property name="ElementShortName">addr_read_i_s[11:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_read_i_s[11:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/uut_fir_filter/pair_and_spare_FIR/sel_data_1" type="array">
-      <obj_property name="ElementShortName">sel_data_1[2:0]</obj_property>
-      <obj_property name="ObjectShortName">sel_data_1[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/uut_fir_filter/pair_and_spare_FIR/sel_data_2" type="array">
-      <obj_property name="ElementShortName">sel_data_2[2:0]</obj_property>
-      <obj_property name="ObjectShortName">sel_data_2[2:0]</obj_property>
+   <wvobject fp_name="/tb/uut_fir_filter/pair_and_spare_FIR/fir_ready" type="logic">
+      <obj_property name="ElementShortName">fir_ready</obj_property>
+      <obj_property name="ObjectShortName">fir_ready</obj_property>
    </wvobject>
    <wvobject fp_name="/tb/uut_fir_filter/pair_and_spare_FIR/counter" type="array">
       <obj_property name="ElementShortName">counter[2:0]</obj_property>
