@@ -125,12 +125,14 @@ begin
             if(counter = checker) then
                 data_outt_s <= (others => '0'); 
             else
-                data_outt_s <= data_from_mux_1(output_data_width-1 downto 1);
+                data_outt_s <= data_from_mux_1(output_data_width-1 downto 1); 
             end if;
         end if;
     end process;
-    
+
     data_outt <= data_outt_s; 
     fir_ready <= fir_ready_s;
     
 end Behavioral;
+
+

@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="42.785000 us"></ZoomStartTime>
-      <ZoomEndTime time="172.785001 us"></ZoomEndTime>
-      <Cursor1Time time="250.000000 us"></Cursor1Time>
+      <ZoomStartTime time="82,118.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="83,480.001 ns"></ZoomEndTime>
+      <Cursor1Time time="82,530.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="170"></NameColumnWidth>
-      <ValueColumnWidth column_width="78"></ValueColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="8" />
+   <WVObjectSize size="7" />
    <wvobject fp_name="/tb/clk_i_s" type="logic">
       <obj_property name="ElementShortName">clk_i_s</obj_property>
       <obj_property name="ObjectShortName">clk_i_s</obj_property>
@@ -48,18 +48,21 @@
    <wvobject fp_name="/tb/uut_fir_filter/pair_and_spare_FIR/data_outt" type="array">
       <obj_property name="ElementShortName">data_outt[23:0]</obj_property>
       <obj_property name="ObjectShortName">data_outt[23:0]</obj_property>
-      <obj_property name="CellHeight">100</obj_property>
       <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_FIXED</obj_property>
       <obj_property name="AnalogYRangeMin">-0.020000</obj_property>
       <obj_property name="AnalogYRRangeMax">0.020000</obj_property>
       <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_LINEAR</obj_property>
       <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
       <obj_property name="AnalogHorizLine">0.000000</obj_property>
-      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
-      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="radix_realType">UNSIGNEDFIXEDPOINTRADIX</obj_property>
       <obj_property name="radix_fractionWidth">24</obj_property>
       <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/uut_fir_filter/fir_ready_s" type="logic">
+      <obj_property name="ElementShortName">fir_ready_s</obj_property>
+      <obj_property name="ObjectShortName">fir_ready_s</obj_property>
    </wvobject>
    <wvobject fp_name="/tb/ready_i_s" type="logic">
       <obj_property name="ElementShortName">ready_i_s</obj_property>
@@ -68,25 +71,16 @@
    <wvobject fp_name="/tb/uut_fir_filter/OUTPUT_bram/data_out" type="array">
       <obj_property name="ElementShortName">data_out[23:0]</obj_property>
       <obj_property name="ObjectShortName">data_out[23:0]</obj_property>
-      <obj_property name="CellHeight">100</obj_property>
       <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_FIXED</obj_property>
       <obj_property name="AnalogYRangeMin">-0.020000</obj_property>
       <obj_property name="AnalogYRRangeMax">0.020000</obj_property>
       <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_LINEAR</obj_property>
       <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
       <obj_property name="AnalogHorizLine">0.000000</obj_property>
-      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
-      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="radix_realType">UNSIGNEDFIXEDPOINTRADIX</obj_property>
       <obj_property name="radix_fractionWidth">24</obj_property>
       <obj_property name="radix_otherWidth">0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/uut_fir_filter/pair_and_spare_FIR/fir_ready" type="logic">
-      <obj_property name="ElementShortName">fir_ready</obj_property>
-      <obj_property name="ObjectShortName">fir_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/uut_fir_filter/pair_and_spare_FIR/counter" type="array">
-      <obj_property name="ElementShortName">counter[2:0]</obj_property>
-      <obj_property name="ObjectShortName">counter[2:0]</obj_property>
    </wvobject>
 </wave_config>

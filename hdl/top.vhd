@@ -33,11 +33,11 @@ end top;
 
 architecture Behavioral of top is
  
-signal data_from_input_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);
-signal data_to_output_bram : std_logic_vector(RAM_WIDTH - 1 downto 0);    
-signal data_to_output_bram_s : std_logic_vector(RAM_WIDTH - 1 downto 0);
+signal data_from_input_bram  : std_logic_vector(RAM_WIDTH - 1 downto 0) := (others => '0');
+signal data_to_output_bram   : std_logic_vector(RAM_WIDTH - 1 downto 0) := (others => '0');
+signal data_to_output_bram_s : std_logic_vector(RAM_WIDTH - 1 downto 0) := (others => '0');
 
-signal address_input_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
+signal address_input_bram  : std_logic_vector(ADDR_SIZE-1  downto 0)   := (others => '0');
 signal address_input_bram_s  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
 
 signal addr_read_s : std_logic_vector(ADDR_SIZE  downto 0) := (others => '0');
@@ -45,15 +45,16 @@ signal addr_read_s : std_logic_vector(ADDR_SIZE  downto 0) := (others => '0');
 signal address_output_bram  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');
 signal address_output_bram_s  : std_logic_vector(ADDR_SIZE-1  downto 0) := (others => '0');  
 
-signal fir_ready_s : std_logic;
+signal fir_ready_s : std_logic := '0'; 
 signal ready_s : std_logic := '0';
 begin
     --Kada se postavi start na jedinicu pocinju da se citaju podaci iz ulaznog BRAMa
     process(clk, start)
     begin
         if(rising_edge(clk)) then
-            if( start = '1' and address_input_bram <= std_logic_vector(to_unsigned(RAM_DEPTH-1,ADDR_SIZE))) then
+            if( start = '1' and address_input_bram <= std_logic_vector(to_unsigned(RAM_DEPTH-1,ADDR_SIZE)) and fir_ready_s = '1')  then
                 address_input_bram <= std_logic_vector(unsigned(address_input_bram) + to_unsigned(1,ADDR_SIZE));        
+                data_to_output_bram_s <= data_to_output_bram;
             else
                 address_input_bram <= address_input_bram ;
             end if; 
@@ -89,10 +90,8 @@ begin
         if(rising_edge(clk)) then
             if(start = '1' and fir_ready_s = '1') then
                 address_output_bram   <= std_logic_vector(unsigned(address_output_bram) + to_unsigned(1,ADDR_SIZE));
-                data_to_output_bram_s <= data_to_output_bram; 
             else
                 address_output_bram <= address_output_bram;
-                data_to_output_bram_s <= data_to_output_bram_s;
             end if;
         end if;         
     end process;        
