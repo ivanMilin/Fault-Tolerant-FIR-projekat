@@ -32,6 +32,8 @@ architecture Behavioral of replication is
     signal data_from_mux_1 : STD_LOGIC_VECTOR (output_data_width - 1 downto 0) := (others=>'0') ;
     signal data_from_mux_2 : STD_LOGIC_VECTOR (output_data_width - 1 downto 0) := (others=>'0') ;
 
+    signal data_from_mux_s : STD_LOGIC_VECTOR (input_data_width-1 downto 0) := (others => '0');
+
     -- Pomocni signali za odlucivanje koji podatak da se prosledi kroz MUX
     signal sel_data_1 : STD_LOGIC_VECTOR (log2c(number_of_replication)-1 downto 0) := std_logic_vector(to_unsigned(0, log2c(number_of_replication)));
     signal sel_data_2 : STD_LOGIC_VECTOR (log2c(number_of_replication)-1 downto 0) := std_logic_vector(to_unsigned(0, log2c(number_of_replication)));
@@ -118,6 +120,18 @@ begin
         end if;
     end process;
     
+        
+    process(clk_i, data_from_mux_1,data_from_mux_2)
+    begin
+        if(rising_edge(clk_i)) then
+            if(data_from_mux_1(0) = '0') then
+                data_from_mux_s  <= data_from_mux_1(output_data_width-1 downto 1);    
+            else
+                data_from_mux_s  <= data_from_mux_2(output_data_width-1 downto 1);     
+            end if;
+        end if; 
+    end process;
+    
     -- kada counter dostigne maksimalan dozvoljen broj gresaka izlaz postaje NULA
     process(clk_i,counter,checker,data_from_mux_1(output_data_width-1 downto 1)) 
     begin
@@ -125,7 +139,7 @@ begin
             if(counter = checker) then
                 data_outt_s <= (others => '0'); 
             else
-                data_outt_s <= data_from_mux_1(output_data_width-1 downto 1); 
+                data_outt_s <= data_from_mux_s; 
             end if;
         end if;
     end process;
@@ -134,5 +148,7 @@ begin
     fir_ready <= fir_ready_s;
     
 end Behavioral;
+
+
 
 

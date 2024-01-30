@@ -51,7 +51,7 @@ begin
     process(clk, start)
     begin
         if(rising_edge(clk)) then
-            if( start = '1' and address_input_bram <= std_logic_vector(to_unsigned(RAM_DEPTH-1,ADDR_SIZE)) and fir_ready_s = '1')  then
+            if( start = '1' and address_input_bram <= std_logic_vector(to_unsigned(RAM_DEPTH-1,ADDR_SIZE)))  then
                 address_input_bram <= std_logic_vector(unsigned(address_input_bram) + to_unsigned(1,ADDR_SIZE));
             else
                 address_input_bram <= address_input_bram ;
