@@ -7,9 +7,6 @@ Blok šema sistema sa pair-and-a-spare tehnikom otpornosti na greške
 Forsiranje 4 greške kod 5-modularnog sistema
 ![NuGet](/images/five_replication.PNG)
 
-Forsiranje 5 grešaka kod 6-modularnog sistema
-![NuGet](/images/six_replication.PNG)
-
 Forsiranje 6 grešaka kod 7-modularnog sistema
 ![NuGet](/images/seven_replication.PNG)
 
